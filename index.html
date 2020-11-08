@@ -1,45 +1,67 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="./css/styles.css" />
+  </head>
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r122/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r92/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three-orbitcontrols@2.110.3/OrbitControls.js"></script>
+    <script>
+      let scene, camera, renderer;
 
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>WebGL Image Transitions | Demo 1 | Codrops</title>
-	<meta name="description" content="A set of creative WebGL-powered image transitions" />
-	<meta name="keywords" content="webgl, image transition, distortion, warp, effect, web design" />
-	<meta name="author" content="Codrops" />
-	<link rel="shortcut icon" href="favicon.ico">
-	<link rel="stylesheet" href="https://use.typekit.net/fex2uvn.css">
-	<link rel="stylesheet" type="text/css" href="css/base.css" />
-	<script>
-	document.documentElement.className = "js";
-	var supportsCssVars = function() { var e, t = document.createElement("style"); return t.innerHTML = "root: { --tmp-var: bold; }", document.head.appendChild(t), e = !!(window.CSS && window.CSS.supports && window.CSS.supports("font-weight", "var(--tmp-var)")), t.parentNode.removeChild(t), e };
-	supportsCssVars() || alert("Please view this in a modern browser that supports CSS Variables.");
-	</script>
-	
-</head>
+      function init() {
 
-<body class="demo-1 cda-removeleft cda-naked cda-noimg">
-	<main>
-			<div class="frame">
-			
-			
-			
-			<div class="frame__demos">
-				
-			</div>
-		</div>
-		<div id="content" class="content">
-			<div id="slider" data-images='["./img/img11.jpg","./img/img12.jpg","./img/img13.jpg"]' data-displacement="">
-			</div>
-		</div>
-	</main>
-	<script src="js/three.js"></script>
-	<script src="js/dat-gui.js"></script>
-	<script src="js/gsap.js"></script>
-	<script src="js/sketch.js"></script>
-	<script src="js/demo1.js"></script>
-	
-</body>
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xdddddd);
 
+        camera = new THREE.PerspectiveCamera(40,window.innerWidth/window.innerHeight,1,5000);
+        camera.rotation.y = 45/180*Math.PI;
+        camera.position.x = 800;
+        camera.position.y = 100;
+        camera.position.z = 1000;
+
+        controls = new THREE.OrbitControls(camera);
+        controls.addEventListener('change', renderer);
+
+        hlight = new THREE.AmbientLight (0x404040,100);
+        scene.add(hlight);
+
+        directionalLight = new THREE.DirectionalLight(0xffffff,100);
+        directionalLight.position.set(0,1,0);
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+        light = new THREE.PointLight(0xc4c4c4,10);
+        light.position.set(0,300,500);
+        scene.add(light);
+        light2 = new THREE.PointLight(0xc4c4c4,10);
+        light2.position.set(500,100,0);
+        scene.add(light2);
+        light3 = new THREE.PointLight(0xc4c4c4,10);
+        light3.position.set(0,100,-500);
+        scene.add(light3);
+        light4 = new THREE.PointLight(0xc4c4c4,10);
+        light4.position.set(-500,300,500);
+        scene.add(light4);
+
+        renderer = new THREE.WebGLRenderer({antialias:true});
+        renderer.setSize(window.innerWidth,window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        let loader = new THREE.GLTFLoader();
+        loader.load('scene.gltf', function(gltf){
+          car = gltf.scene.children[0];
+          car.scale.set(0.5,0.5,0.5);
+          scene.add(gltf.scene);
+          animate();
+        });
+      }
+      function animate() {
+        renderer.render(scene,camera);
+        requestAnimationFrame(animate);
+      }
+      init();
+    </script>
+  </body>
 </html>
